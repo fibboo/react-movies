@@ -77,8 +77,6 @@ nav {
   right: 0.3rem;
 }
 
-.movie-filter {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+label:not(:last-child) {
+  margin-right: 1rem;
 }

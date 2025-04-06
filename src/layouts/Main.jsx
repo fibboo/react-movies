@@ -1,21 +1,19 @@
 import React from 'react';
 import {Movies} from "../components/Movies";
 import {Preloader} from "../components/Preloader";
-import {Search} from "../components/Search";
+import {Search} from "../components/Search"
+
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 export class Main extends React.Component {
   state = {
     movies: [],
-    isFound: true,
+    loading: true,
   }
 
   getMovies = (search, type) => {
-    console.log(search, type)
-    let url = `http://www.omdbapi.com/?apikey=d5159d25&s=${search}`
-    if (type) {
-      url += `&type=${type}`
-    }
-    fetch(url)
+    this.setState({loading: true});
+    fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${search}${type ? `&type=${type}` : ''}`)
         .then(response => response.json())
         .then(data => {
           if (data.Search) {
@@ -27,32 +25,26 @@ export class Main extends React.Component {
               poster: movie.Poster
             }));
 
-            this.setState({movies: formattedMovies, isFound: true});
+            this.setState({movies: formattedMovies, loading: false});
           } else {
-            this.setState({movies: [], isFound: false});
+            this.setState({movies: [], loading: false});
           }
         })
         .catch(error => {
-          this.setState({movies: []});
+          this.setState({movies: [], loading: false});
           console.error("Fetch error:", error);
         });
-
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.getMovies("severance")
-    }, 2000);
+    this.getMovies("severance")
   }
 
   handleSearch = (search, type) => {
     this.setState({movies: []})
     search = search.trim();
-    if (search === "") {
+    if (search === '') {
       search = 'severance'
-    } else if (search.length < 3) {
-      this.setState({isFound: false})
-      return
     }
     this.getMovies(search, type);
   }
@@ -61,12 +53,10 @@ export class Main extends React.Component {
     return (
         <main className='container content'>
           <Search handleSearch={this.handleSearch}/>
-          {this.state.movies.length > 0 ?
-              <Movies movies={this.state.movies}/>
+          {this.state.loading ?
+              <Preloader/>
               :
-              !this.state.isFound ?
-                  <h4 className='not-found'>Movies not found!</h4> :
-                  <Preloader/>
+              <Movies movies={this.state.movies}/>
           }
         </main>
     )

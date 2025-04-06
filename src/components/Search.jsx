@@ -7,7 +7,7 @@ export class Search extends React.Component {
     type: ''
   }
 
-  handleOnClick = (event) => {
+  searchMovies = (event) => {
     event.preventDefault();
     const {search, type} = this.state;
     if (search.length > 0) {
@@ -17,12 +17,14 @@ export class Search extends React.Component {
 
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      this.handleOnClick(event);
+      this.searchMovies(event);
     }
   }
 
-  handleChange = (event) => {
-    this.setState({[event.target.name]: event.target.value})
+  filterChange = (event) => {
+    this.setState(() => ({[event.target.name]: event.target.value}), () => {
+      this.props.handleSearch(this.state.search, this.state.type);
+    })
   }
 
   render() {
@@ -35,11 +37,11 @@ export class Search extends React.Component {
                 name="search"
                 placeholder="Search"
                 value={this.state.search}
-                onChange={this.handleChange}
+                onChange={event => this.setState({search: event.target.value}) }
                 onKeyDown={this.handleKeyDown}
             />
 
-            <div className="movie-filter">
+            <div>
               <label>
                 <input
                     className='with-gap'
@@ -47,7 +49,7 @@ export class Search extends React.Component {
                     name="type"
                     value=""
                     checked={this.state.type === ''}
-                    onChange={this.handleChange}/>
+                    onChange={this.filterChange}/>
                 <span>All</span>
               </label>
               <label>
@@ -57,7 +59,7 @@ export class Search extends React.Component {
                     name="type"
                     value="movie"
                     checked={this.state.type === 'movie'}
-                    onChange={this.handleChange}/>
+                    onChange={this.filterChange}/>
                 <span>Movies only</span>
               </label>
               <label>
@@ -67,12 +69,12 @@ export class Search extends React.Component {
                     name="type"
                     value="series"
                     checked={this.state.type === 'series'}
-                    onChange={this.handleChange}/>
+                    onChange={this.filterChange}/>
                 <span>Series only</span>
               </label>
             </div>
 
-            <button className="btn search-btn" onClick={this.handleOnClick}>Search</button>
+            <button className="btn search-btn" onClick={this.searchMovies}>Search</button>
           </div>
         </div>
     );
