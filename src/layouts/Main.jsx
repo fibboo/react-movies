@@ -13,7 +13,7 @@ export class Main extends React.Component {
 
   getMovies = (search, type) => {
     this.setState({loading: true});
-    fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${search}${type ? `&type=${type}` : ''}`)
+    fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${search}${type ? `&type=${type}` : ''}`)
         .then(response => response.json())
         .then(data => {
           if (data.Search) {
