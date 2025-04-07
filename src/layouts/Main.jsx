@@ -1,18 +1,16 @@
-import React from 'react';
+import {useEffect, useState} from "react";
 import {Movies} from "../components/Movies";
 import {Preloader} from "../components/Preloader";
 import {Search} from "../components/Search"
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
-export class Main extends React.Component {
-  state = {
-    movies: [],
-    loading: true,
-  }
+export function Main() {
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  getMovies = (search, type) => {
-    this.setState({loading: true});
+  const getMovies = (search, type) => {
+    setIsLoading(true);
     fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${search}${type ? `&type=${type}` : ''}`)
         .then(response => response.json())
         .then(data => {
@@ -25,40 +23,41 @@ export class Main extends React.Component {
               poster: movie.Poster
             }));
 
-            this.setState({movies: formattedMovies, loading: false});
+            setMovies(formattedMovies);
           } else {
-            this.setState({movies: [], loading: false});
+            setMovies([]);
           }
         })
         .catch(error => {
-          this.setState({movies: [], loading: false});
+          setMovies([]);
           console.error("Fetch error:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
   }
 
-  componentDidMount() {
-    this.getMovies("severance")
-  }
-
-  handleSearch = (search, type) => {
-    this.setState({movies: []})
+  const handleSearch = (search, type) => {
+    setMovies([])
     search = search.trim();
     if (search === '') {
       search = 'severance'
     }
-    this.getMovies(search, type);
+    getMovies(search, type);
   }
 
-  render() {
-    return (
-        <main className='min-h-screen flex flex-col justify-start p-5'>
-          <Search handleSearch={this.handleSearch}/>
-          {this.state.loading ?
-              <Preloader/>
-              :
-              <Movies movies={this.state.movies}/>
-          }
-        </main>
-    )
-  }
+  useEffect(() => {
+    getMovies("severance");
+  }, [])
+
+
+  return (
+      <main className='min-h-screen flex flex-col justify-start p-5'>
+        <Search handleSearch={handleSearch}/>
+        {isLoading ?
+            <Preloader/> :
+            <Movies movies={movies}/>
+        }
+      </main>
+  );
 }
