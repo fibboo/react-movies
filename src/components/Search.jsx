@@ -15,6 +15,14 @@ export class Search extends React.Component {
     }
   }
 
+  searchChange = (event) => {
+    const value = event.target.value;
+    this.setState({search: value});
+    if (!value) {
+      this.props.handleSearch(value, this.state.type);
+    }
+  }
+
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       this.searchMovies(event);
@@ -29,52 +37,59 @@ export class Search extends React.Component {
 
   render() {
     return (
-        <div className='row'>
-          <div className="input-field ">
+        <div className='flex flex-col gap-4 mb-4'>
+          <div className="flex items-center border border-slate-600 rounded overflow-hidden">
             <input
-                className="validate"
+                className="bg-transparent flex-grow px-4 py-2 focus:outline-none"
                 type="search"
                 name="search"
                 placeholder="Search"
                 value={this.state.search}
-                onChange={event => this.setState({search: event.target.value}) }
+                onChange={this.searchChange}
                 onKeyDown={this.handleKeyDown}
             />
+            <button
+                className="bg-indigo-600 hover:bg-indigo-700 transition-colors text-white px-4 py-2 flex items-center justify-center"
+                onClick={this.searchMovies}
+            >
+              <span className="material-icons">search</span>
+            </button>
 
-            <div>
-              <label>
-                <input
-                    className='with-gap'
-                    type="radio"
-                    name="type"
-                    value=""
-                    checked={this.state.type === ''}
-                    onChange={this.filterChange}/>
-                <span>All</span>
-              </label>
-              <label>
-                <input
-                    className='with-gap'
-                    type="radio"
-                    name="type"
-                    value="movie"
-                    checked={this.state.type === 'movie'}
-                    onChange={this.filterChange}/>
-                <span>Movies only</span>
-              </label>
-              <label>
-                <input
-                    className='with-gap'
-                    type="radio"
-                    name="type"
-                    value="series"
-                    checked={this.state.type === 'series'}
-                    onChange={this.filterChange}/>
-                <span>Series only</span>
-              </label>
-            </div>
+          </div>
 
-            <button className="btn search-btn" onClick={this.searchMovies}>Search</button>
+          <div className="flex items-center gap-4">
+            <label className="inline-flex items-center gap-2">
+              <input
+                  className='form-radio text-indigo-600'
+                  type="radio"
+                  name="type"
+                  value=""
+                  checked={this.state.type === ''}
+                  onChange={this.filterChange}/>
+              <span>All</span>
+            </label>
+
+            <label className="inline-flex items-center gap-2">
+              <input
+                  className='form-radio text-indigo-600'
+                  type="radio"
+                  name="type"
+                  value="movie"
+                  checked={this.state.type === 'movie'}
+                  onChange={this.filterChange}/>
+              <span>Movies only</span>
+            </label>
+
+            <label className="inline-flex items-center gap-2">
+              <input
+                  className='form-radio text-indigo-600'
+                  type="radio"
+                  name="type"
+                  value="series"
+                  checked={this.state.type === 'series'}
+                  onChange={this.filterChange}/>
+              <span>Series only</span>
+            </label>
           </div>
         </div>
     );

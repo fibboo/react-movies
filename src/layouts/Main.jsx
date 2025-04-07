@@ -3,7 +3,7 @@ import {Movies} from "../components/Movies";
 import {Preloader} from "../components/Preloader";
 import {Search} from "../components/Search"
 
-const API_KEY = process.env.REACT_APP_API_KEY;
+const API_KEY = import.meta.env.VITE_API_KEY
 
 export class Main extends React.Component {
   state = {
@@ -51,7 +51,7 @@ export class Main extends React.Component {
 
   render() {
     return (
-        <main className='container content'>
+        <main className='min-h-screen flex flex-col justify-start p-5'>
           <Search handleSearch={this.handleSearch}/>
           {this.state.loading ?
               <Preloader/>

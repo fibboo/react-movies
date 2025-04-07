@@ -7,7 +7,7 @@ import Footer from './layouts/Footer';
 
 export default function App() {
   return (
-      <div className="app-wrapper">
+      <div className="p-5">
         <Header/>
         <Main/>
         <Footer/>
